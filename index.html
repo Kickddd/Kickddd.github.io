@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RP – Accueil + Slides</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: black;
+      color: white;
+      overflow: hidden;
+    }
+    /* --- ACCUEIL --- */
+    .accueil {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      z-index: 1000;
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .accueil.hidden {
+      opacity: 0;
+      transform: scale(1.15);
+      pointer-events: none;
+    }
+    .tetes {
+      display: flex;
+      gap: 5rem;
+      align-items: center;
+    }
+    .tete-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .nom-personnage {
+      font-size: 1.2rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #f75a6a, #fca76c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      user-select: none;
+    }
+    .tete {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s, box-shadow 0.3s, outline 0.2s;
+      border: 3px solid rgba(255,255,255,0.08);
+    }
+    .tete::before {
+      content: "";
+    }
+    .tete:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    }
+    .tete.selected {
+      box-shadow: 0 0 30px rgba(255,102,204,0.35), 0 8px 40px rgba(0,0,0,0.6);
+      outline: 4px solid rgba(255,102,204,0.12);
+    }
+    /* Bouton accéder */
+    .btn-acceder {
+      font-weight: 800;
+      font-size: 2.2rem;
+      background: linear-gradient(90deg, #f75a6a, #fca76c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      border: 2px solid rgba(247,90,106,0.25);
+      padding: 0.9rem 1.6rem;
+      border-radius: 50px;
+      cursor: pointer;
+      background-color: rgba(255,255,255,0.02);
+      transition: transform 0.25s, background-color 0.25s;
+    }
+    .btn-acceder:hover {
+      transform: scale(1.05);
+      background-color: rgba(255,255,255,0.04);
+    }
+    /* --- SLIDER --- */
+    .slider {
+      display: flex;
+      width: 1000%;
+      height: 100vh;
+      transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .slide {
+      position: relative;
+      min-width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 5rem 8rem 5rem 12rem;
+      color: white;
+      overflow: hidden;
+    }
+    .slide::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-size: cover;
+      background-position: center;
+      filter: blur(6px) brightness(0.45);
+      z-index: -2;
+    }
+    .slide::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.35);
+      z-index: -1;
+    }
+    /* Fonds Jayden - nouvelle sélection cinématographique */
+    .slide1::before { background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80'); } /* rue / nuit */
+    .slide2::before { background-image: url('https://images.unsplash.com/photo-1531123414780-f0b0f0c40f32?auto=format&fit=crop&w=1470&q=80'); } /* ambiance urbaine */
+    .slide3::before { background-image: url('https://images.unsplash.com/photo-1520975921921-6f2eea9f4b58?auto=format&fit=crop&w=1470&q=80'); } /* garage / mécanique */
+    .slide4::before { background-image: url('https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1470&q=80'); } /* nuit club */
+    .slide5::before { background-image: url('https://images.unsplash.com/photo-1505685296765-3a2736de412f?auto=format&fit=crop&w=1470&q=80'); } /* intérieur sombre */
+    /* Fonds Tariq - teintes contrastées LA / club / basket / sombre */
+    .slide6::before { background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1470&q=80'); } /* East Atlanta street */
+    .slide7::before { background-image: url('https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1470&q=80'); } /* terrain de basket */
+    .slide8::before { background-image: url('https://images.unsplash.com/photo-1517817748493-1a89df6b7e3b?auto=format&fit=crop&w=1470&q=80'); } /* ambiance sombre / deuil */
+    .slide9::before { background-image: url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1470&q=80'); } /* Los Angeles vue urbaine */
+    .slide10::before { background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1470&q=80'); } /* club / nuit */
+    .slide-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(4px);
+      padding: 2rem 3rem;
+      border-radius: 10px;
+    }
+    h1 {
+      font-weight: 800;
+      font-size: 3rem;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(90deg, #f75a6a 0%, #fca76c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      user-select: none;
+    }
+    p {
+      font-weight: 600;
+      font-size: 1.15rem;
+      line-height: 1.5;
+      background: linear-gradient(90deg, #fca76c 0%, #f75a6a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: pre-wrap;
+    }
+    .nav {
+      position: fixed;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      padding: 0 1rem;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .nav button {
+      pointer-events: auto;
+      background: rgba(255, 102, 204, 0.2);
+      border: 2px solid #ff66cc;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 2.2rem;
+      color: #ff66cc;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      user-select: none;
+    }
+    .nav button:hover {
+      background: #ff66cc;
+      color: black;
+      transform: scale(1.08);
+    }
+    /* Bouton Accueil */
+    .btn-accueil {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 102, 204, 0.15);
+      border: 2px solid #ff66cc;
+      color: #ff66cc;
+      font-size: 1.05rem;
+      border-radius: 30px;
+      padding: 0.45rem 0.85rem;
+      cursor: pointer;
+      z-index: 5;
+    }
+    .btn-accueil:hover {
+      background: #ff66cc;
+      color: black;
+    }
+
+    /* responsive */
+    @media(max-width:900px){
+      .tetes { gap: 2rem; }
+      .tete { width: 120px; height: 120px; }
+      .btn-acceder { font-size: 1.6rem; padding: 0.7rem 1.2rem; }
+      .slide-content { padding: 1.2rem; max-width: 90%; margin-left: 2rem; }
+      h1 { font-size: 2rem; }
+      p { font-size: 1rem; }
+      .slide { padding: 3rem 2rem; justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ACCUEIL -->
+  <div class="accueil" id="accueil">
+    <div style="text-align:center">
+      <h1 style="font-size:2.4rem; font-weight:800; background: linear-gradient(90deg,#f75a6a,#fca76c); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Bienvenue — Choisis un personnage</h1>
+      <p style="margin-top:0.8rem; color:rgba(255,255,255,0.6); max-width:760px;">Sélectionne Jayden ou Tariq puis clique sur "Cliquer pour accéder". Les fiches se présentent en 5 slides chacune.</p>
+    </div>
+
+    <div class="tetes" role="list" aria-label="Choix personnage">
+      <div class="tete-container" role="listitem">
+        <div class="nom-personnage">Jayden Simmons</div>
+        <div class="tete" id="tete-jayden" data-slide="0" tabindex="0" style="background-image: url('https://image.noelshack.com/fichiers/2025/32/7/1754815220-d207ff7e9022a6fa309c32c6b3730b47.jpg');"></div>
+      </div>
+      <div class="tete-container" role="listitem">
+        <div class="nom-personnage">Tariq Holloway</div>
+        <div class="tete" id="tete-tariq" data-slide="5" tabindex="0" style="background-image: url('https://image.noelshack.com/fichiers/2025/32/7/1754815220-d207ff7e9022a6fa309c32c6b3730b47.jpg');"></div>
+      </div>
+    </div>
+
+    <button class="btn-acceder" id="btnAcceder">Cliquer pour accéder</button>
+  </div>
+
+  <!-- SLIDER -->
+  <div class="slider" id="slider" aria-live="polite">
+    <!-- Jayden - 5 slides -->
+    <div class="slide slide1">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Jayden Simmons (Jay)</h1>
+        <p>Jayden Simmons est né à La Havane, à Cuba, d’un père nigérien et d’une mère cubaine.<br>
+        Ses parents, déjà marqués par les difficultés économiques, ont décidé d’immigrer aux États-Unis alors qu’il avait 3 ans. Leur but : fuir la crise économique qui frappe Cuba depuis les années 90 et offrir à leur fils une meilleure éducation.<br>
+        Enfant unique, Jayden a grandi à Chicago, dans le quartier de Greater Grant Crossing, où sa famille s’est installée quand il avait 5 ans.</p>
+      </div>
+    </div>
+
+    <div class="slide slide2">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Personnalité et scolarité</h1>
+        <p>Très solitaire, il a développé une maturité impressionnante dès son plus jeune âge, ce qui a marqué ses professeurs.<br>
+        Élève sérieux, attentif, respectueux et motivé, il avait cependant un point faible : une timidité extrême qui frustrerait même ses enseignants, conscients de son potentiel “gâché” par ce trait de caractère.</p>
+      </div>
+    </div>
+
+    <div class="slide slide3">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Le choc universitaire</h1>
+        <p>Les années ont passé et Jayden est entré à l’université.<br>
+        Mais cette année-là, les frais de scolarité d’environ 15 000 $ par an sont devenus impossibles à payer : son père venait de perdre son emploi et sa mère, femme de ménage dans un petit magasin, gagnait à peine de quoi payer le loyer et les courses.<br>
+        La demande de bourse, refusée par le proviseur pour cause de saturation, a conduit Jayden à exploser de colère et insulter le proviseur devant ses parents. Résultat : il est exclu de l’université.</p>
+      </div>
+    </div>
+
+    <div class="slide slide4">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Descente et survie</h1>
+        <p>La famille est alors au plus bas : père au chômage, mère sous-payée, fils sans études.<br>
+        Pour subvenir aux besoins du foyer, Jayden travaille au noir comme mécanicien, un savoir-faire transmis par son père. Connu dans le quartier comme “le petit mécano”, il se rend vite compte que ce métier ne suffit pas.<br>
+        Peu à peu, il glisse vers de petits délits — vols, rackets — avant de tomber dans des affaires plus graves.</p>
+      </div>
+    </div>
+
+    <div class="slide slide5">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Club 77, la revanche</h1>
+        <p>Avec les années, Jayden accumule une profonde rancune contre le système.<br>
+        Mais plutôt que de se perdre dans la violence, il commence à rêver d’un autre chemin : bâtir quelque chose à lui.<br>
+        C’est à ce moment-là qu’il rencontre son futur associé, un entrepreneur ambitieux qui partage sa vision. Ensemble, ils imaginent un lieu unique, mélange de musique, de luxe et d’énergie brute : Le Club 77.<br>
+        Pour Jayden, ce projet est bien plus qu’une boîte de nuit : c’est une revanche sur la vie, un espace où il impose ses propres règles, et où la rue et le monde de la nuit se rencontrent pour créer une légende.</p>
+      </div>
+    </div>
+
+    <!-- Tariq - 5 slides (texte intact, découpé en 5) -->
+    <div class="slide slide6">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Tariq Holloway</h1>
+        <p>Tariq Holloway est né à Atlanta, d’un père haïtien et d’une mère afro-américaine. Il a passé la majeure partie de sa vie dans les quartiers animés et souvent mouvementés d’Atlanta, plus précisément à East Atlanta. Enfant, Tariq était un jeune homme enthousiaste, passionné par le basket, sport qu’il considérait comme son échappatoire. En parallèle, il développait déjà un goût marqué pour la musique et l’atmosphère des soirées locales, un univers qui le fascinait. Il a grandi dans un environnement où la musique, la culture et le sport étaient omniprésents. Bien qu’il ait toujours été un élève moyen à l’école, Tariq se distinguait sur le terrain de basket.</p>
+      </div>
+    </div>
+
+    <div class="slide slide7">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Enfance et scolarité</h1>
+        <p>Il a fréquenté des écoles publiques où il a obtenu des résultats corrects, mais son cœur n’était pas vraiment dans les études. À l’âge de 13 ans, il a perdu son père dans une fusillade liée à un conflit de voisinage. Cet événement tragique a bouleversé sa vie et l’a poussé à prendre conscience des dangers qui l’entouraient. Après la mort de son père, sa mère, une infirmière compétente, a tout fait pour l’encourager à poursuivre ses études. Malgré ses efforts, Tariq a réalisé que l’école ne lui apportait pas ce qu’il recherchait.</p>
+      </div>
+    </div>
+
+    <div class="slide slide8">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Début dans l’événementiel</h1>
+        <p>À 15 ans, il a commencé à se détourner des études et à chercher des moyens de gagner de l’argent pour aider sa mère à subvenir à leurs besoins. C’est à cette période qu’il a commencé à organiser des petites soirées de quartier, découvrant qu’il avait un vrai talent pour attirer du monde et créer une ambiance. À l’âge de 17 ans, Tariq et sa mère ont déménagé à Los Angeles, espérant une vie meilleure. Ils se sont installés dans le quartier de South Central, un endroit où Tariq a rapidement pris ses marques.</p>
+      </div>
+    </div>
+
+    <div class="slide slide9">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>South Central & la rue</h1>
+        <p>Dans son nouveau quartier, il a rencontré plusieurs amis et a commencé à se rapprocher de sa communauté locale, notamment de jeunes passionnés de basket tout comme lui. Mais peu à peu, le basket est passé au second plan, remplacé par sa passion croissante pour l’événementiel et la vie nocturne. Tariq a rejoint un groupe de jeunes organisateurs qui montaient des soirées improvisées dans des lieux abandonnés ou des sous-sols de bars. C’est à ce moment-là qu’il a commencé à s’impliquer dans des activités illégales, cherchant à gagner de l’argent rapidement pour aider sa mère et honorer la mémoire de son père.</p>
+      </div>
+    </div>
+
+    <div class="slide slide10">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Club 77</h1>
+        <p>Bien qu’il soit toujours passionné par le basket, la réalité de la rue et du business l’a attiré. Tariq est devenu un membre respecté d’un petit groupe local, mais il n’a jamais oublié ses rêves d’ouvrir un lieu à lui. Aujourd’hui, cet objectif est devenu réalité avec le Club 77, un établissement qu’il dirige d’une main ferme et où chaque soirée est pensée pour marquer les esprits. Avec une ambition et un sens de la loyauté, Tariq se bat pour réussir dans un environnement difficile, cherchant un équilibre entre ses passions et les réalités de la vie dans les rues de Los Angeles.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div class="nav" aria-hidden="false">
+    <button aria-label="Slide précédente" onclick="prevSlide()">&#10094;</button>
+    <button aria-label="Slide suivante" onclick="nextSlide()">&#10095;</button>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slider = document.getElementById('slider');
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const accueil = document.getElementById('accueil');
+    const btnAcceder = document.getElementById('btnAcceder');
+    let selectedSlide = null;
+
+    // sélection clavier et clic sur les têtes
+    document.querySelectorAll('.tete').forEach(tete => {
+      tete.addEventListener('click', () => {
+        document.querySelectorAll('.tete').forEach(t => t.classList.remove('selected'));
+        tete.classList.add('selected');
+        selectedSlide = parseInt(tete.dataset.slide, 10);
+      });
+      // accessibilité : Enter/Space to select
+      tete.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          tete.click();
+        }
+      });
+    });
+
+    btnAcceder.addEventListener('click', () => {
+      if (selectedSlide !== null) {
+        accueil.classList.add('hidden');
+        setTimeout(() => {
+          currentSlide = selectedSlide;
+          updateSlide();
+        }, 500);
+      } else {
+        alert("Sélectionne un personnage !");
+      }
+    });
+
+    function updateSlide() {
+      // slider transform: slide index * 100%
+      slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+      // scrolling into view for accessibility
+      const focused = slides[currentSlide].querySelector('h1') || slides[currentSlide].querySelector('p');
+      if (focused) focused.setAttribute('tabindex', '-1');
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateSlide();
+    }
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      updateSlide();
+    }
+    function retourAccueil() {
+      accueil.classList.remove('hidden');
+      selectedSlide = null;
+      document.querySelectorAll('.tete').forEach(t => t.classList.remove('selected'));
+      currentSlide = 0;
+      updateSlide();
+    }
+
+    // keyboard navigation
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') nextSlide();
+      else if (e.key === 'ArrowLeft') prevSlide();
+      else if (e.key === 'Escape') retourAccueil();
+    });
+
+    // init (place slider on slide 0)
+    updateSlide();
+  </script>
+</body>
+</html>
