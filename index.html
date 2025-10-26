@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RP – Tariq Holloway</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body, html {
+      width: 100%; height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: black; color: white;
+      overflow: hidden;
+    }
+    .accueil {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 3rem; background: black;
+      z-index: 1000;
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .accueil.hidden { opacity: 0; transform: scale(1.15); pointer-events: none; }
+
+    .tete-container { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+    .nom-personnage {
+      font-size: 1.2rem; font-weight: bold;
+      background: linear-gradient(90deg, #f75a6a, #fca76c);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-align: center; user-select: none;
+    }
+    .tete {
+      width: 150px; height: 150px; border-radius: 50%;
+      background-size: cover; background-position: center;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: 3px solid rgba(255,255,255,0.08);
+      transition: transform 0.3s, box-shadow 0.3s, outline 0.2s;
+    }
+    .tete:hover { transform: scale(1.08); box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+    .tete.selected { box-shadow: 0 0 30px rgba(255,102,204,0.35); outline: 4px solid rgba(255,102,204,0.12); }
+
+    .btn-acceder {
+      font-weight: 800; font-size: 2.2rem;
+      background: linear-gradient(90deg, #f75a6a, #fca76c);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      border: 2px solid rgba(247,90,106,0.25);
+      padding: 0.9rem 1.6rem; border-radius: 50px;
+      cursor: pointer; background-color: rgba(255,255,255,0.02);
+      transition: transform 0.25s, background-color 0.25s;
+    }
+    .btn-acceder:hover { transform: scale(1.05); background-color: rgba(255,255,255,0.04); }
+
+    .slider {
+      display: flex; width: 500%; height: 100vh;
+      transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .slide {
+      position: relative; min-width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: flex-start;
+      padding: 5rem 8rem 5rem 12rem;
+      color: white; overflow: hidden;
+    }
+    .slide::before {
+      content: ""; position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-size: cover; background-position: center;
+      filter: blur(6px) brightness(0.45); z-index: -2;
+    }
+    .slide::after {
+      content: ""; position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; background: rgba(0,0,0,0.35); z-index: -1;
+    }
+    .slide6::before { background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1470&q=80'); }
+    .slide7::before { background-image: url('https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1470&q=80'); }
+    .slide8::before { background-image: url('https://images.unsplash.com/photo-1517817748493-1a89df6b7e3b?auto=format&fit=crop&w=1470&q=80'); }
+    .slide9::before { background-image: url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1470&q=80'); }
+    .slide10::before { background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1470&q=80'); }
+
+    .slide-content {
+      position: relative; z-index: 1; max-width: 700px;
+      background: rgba(0,0,0,0.35); backdrop-filter: blur(4px);
+      padding: 2rem 3rem; border-radius: 10px;
+    }
+    h1 {
+      font-weight: 800; font-size: 3rem; margin-bottom: 1.25rem;
+      background: linear-gradient(90deg, #f75a6a 0%, #fca76c 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      user-select: none;
+    }
+    p {
+      font-weight: 600; font-size: 1.15rem; line-height: 1.5;
+      background: linear-gradient(90deg, #fca76c 0%, #f75a6a 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      white-space: pre-wrap;
+    }
+    .btn-accueil {
+      position: absolute; top: 20px; left: 20px;
+      background: rgba(255, 102, 204, 0.15);
+      border: 2px solid #ff66cc; color: #ff66cc;
+      font-size: 1.05rem; border-radius: 30px;
+      padding: 0.45rem 0.85rem; cursor: pointer; z-index: 5;
+    }
+    .btn-accueil:hover { background: #ff66cc; color: black; }
+
+    .nav {
+      position: fixed; top: 50%; width: 100%;
+      display: flex; justify-content: space-between;
+      transform: translateY(-50%); padding: 0 1rem;
+      pointer-events: none; z-index: 10;
+    }
+    .nav button {
+      pointer-events: auto; background: rgba(255, 102, 204, 0.2);
+      border: 2px solid #ff66cc; border-radius: 50%;
+      width: 60px; height: 60px; font-size: 2.2rem;
+      color: #ff66cc; cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .nav button:hover { background: #ff66cc; color: black; transform: scale(1.08); }
+
+    @media(max-width:900px){
+      .tete { width: 120px; height: 120px; }
+      .btn-acceder { font-size: 1.6rem; padding: 0.7rem 1.2rem; }
+      .slide-content { padding: 1.2rem; max-width: 90%; margin-left: 2rem; }
+      h1 { font-size: 2rem; } p { font-size: 1rem; }
+      .slide { padding: 3rem 2rem; justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="accueil" id="accueil">
+    <div style="text-align:center">
+      <h1 style="font-size:2.4rem; font-weight:800; background: linear-gradient(90deg,#f75a6a,#fca76c); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+        Bienvenue — Tariq Holloway
+      </h1>
+      <p style="margin-top:0.8rem; color:rgba(255,255,255,0.6); max-width:760px;">
+        Clique sur "Accéder" pour découvrir l’histoire de Tariq.
+      </p>
+    </div>
+    <div class="tete-container">
+      <div class="nom-personnage">Tariq Holloway</div>
+      <div class="tete selected" id="tete-tariq" data-slide="0" tabindex="0"
+        style="background-image:url('https://image.noelshack.com/fichiers/2025/32/7/1754815220-d207ff7e9022a6fa309c32c6b3730b47.jpg');">
+      </div>
+    </div>
+    <button class="btn-acceder" id="btnAcceder">Accéder</button>
+  </div>
+
+  <div class="slider" id="slider">
+    <div class="slide slide6">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Tariq Holloway</h1>
+        <p>Tariq Holloway est né à Atlanta d’un père haïtien et d’une mère afro-américaine, et a grandi dans les quartiers animés et souvent mouvementés d’East Atlanta. Passionné de basket dès son enfance, il voyait ce sport comme une échappatoire face à la réalité de son environnement. Élève moyen, il se distinguait surtout sur le terrain, mais sa vie a basculé à 13 ans lorsqu’il a perdu son père dans une fusillade de voisinage.</p>
+      </div>
+    </div>
+
+    <div class="slide slide7">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Adolescence et Réalités</h1>
+        <p>Sa mère, infirmière dévouée, a tout fait pour le soutenir, mais Tariq a rapidement compris que l’école ne lui apporterait pas ce qu’il cherchait. À 15 ans, il a commencé à chercher des moyens de gagner de l’argent pour aider sa mère, prenant peu à peu ses distances avec les études et s’immergeant dans la vie de quartier.</p>
+      </div>
+    </div>
+
+    <div class="slide slide8">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Nouvelle Vie à Los Santos</h1>
+        <p>À 17 ans, ils ont déménagé à Los Santos. Là, Tariq s’est intégré à la communauté locale, rencontrant des amis partageant sa passion pour le basket et participant à des matchs organisés dans les parcs. C’est également à cette période qu’il a commencé à s’impliquer dans des activités illégales pour subvenir aux besoins de sa mère et survivre dans son nouvel environnement.</p>
+      </div>
+    </div>
+
+    <div class="slide slide9">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Passions et Loyauté</h1>
+        <p>Malgré ces difficultés et ses choix parfois risqués, Tariq n’a jamais perdu sa passion pour le basket ni sa loyauté envers sa famille et ses amis. Le souvenir de son père et le soutien constant de sa mère sont restés ses principaux moteurs dans la vie.</p>
+      </div>
+    </div>
+
+    <div class="slide slide10">
+      <button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button>
+      <div class="slide-content">
+        <h1>Ambitions et Futur</h1>
+        <p>Aujourd’hui, avec une ambition intacte et un sens profond de la loyauté, Tariq cherche à naviguer dans ce monde complexe. Il tente de concilier ses rêves et les réalités d’une vie marquée par la rue, tout en aspirant à réussir et à protéger ceux qu’il aime.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button onclick="prevSlide()">&#10094;</button>
+    <button onclick="nextSlide()">&#10095;</button>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slider = document.getElementById('slider');
+    const slides = document.querySelectorAll('.slide');
+    const accueil = document.getElementById('accueil');
+    const btnAcceder = document.getElementById('btnAcceder');
+
+    btnAcceder.addEventListener('click', () => {
+      accueil.classList.add('hidden');
+      setTimeout(() => { updateSlide(); }, 500);
+    });
+
+    function updateSlide() {
+      slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      updateSlide();
+    }
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      updateSlide();
+    }
+    function retourAccueil() {
+      accueil.classList.remove('hidden');
+      currentSlide = 0;
+      updateSlide();
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') nextSlide();
+      else if (e.key === 'ArrowLeft') prevSlide();
+      else if (e.key === 'Escape') retourAccueil();
+    });
+  </script>
+</body>
+</html>
