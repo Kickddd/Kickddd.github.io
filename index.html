@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>RP — Accueil • Personnages • SMM</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600;700&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070707; --txt:#f2f2f2; --muted:#bfbfbf;
+    --accent:#d3453a; --accent2:#5aa2ff; --tape:#f7d56d; --gold:#f0cc64;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#000;color:#fff;overflow:hidden}
+
+  /* ================= ACCUEIL ================= */
+  .home{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:3000; background:#000}
+  .home-bg{position:absolute; inset:0; overflow:hidden; filter:contrast(1.08) saturate(1.08)}
+  .home-bg img{position:absolute; width:110%; height:110%; left:-5%; top:-5%; object-fit:cover; opacity:.9; filter:grayscale(.1); transform:scale(1.06); animation:homeKen 28s linear infinite}
+  .home-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.5), rgba(0,0,0,.9))}
+  @keyframes homeKen{0%{transform:scale(1.06)}50%{transform:scale(1.12) translate3d(2%,-2%,0)}100%{transform:scale(1.06)}}
+  .home-fx{position:absolute; inset:0; pointer-events:none}
+  .home-fx .flare{position:absolute; width:36vmin; height:36vmin; border-radius:50%; filter:blur(42px); opacity:.18}
+  .home-fx .red{top:12%; left:18%; background:radial-gradient(circle, rgba(211,69,58,.9), transparent 60%); animation:homeR 1.7s infinite}
+  .home-fx .blue{bottom:10%; right:18%; background:radial-gradient(circle, rgba(90,162,255,.9), transparent 60%); animation:homeB 2s infinite}
+  @keyframes homeR{0%,100%{opacity:.06}50%{opacity:.45}}
+  @keyframes homeB{0%,100%{opacity:.06}50%{opacity:.38}}
+  .home-smoke{position:absolute; left:-12%; bottom:-12%; width:150%; height:56%; background:radial-gradient(closest-side, rgba(255,255,255,.07), transparent 65%); filter:blur(40px); opacity:.6; animation:homeSmoke 12s linear infinite}
+  @keyframes homeSmoke{0%{transform:translateY(10px)}50%{transform:translateY(-10px)}100%{transform:translateY(10px)}}
+  .home-wrap{position:relative; z-index:10; width:min(1100px,92vw); display:flex; flex-direction:column; align-items:center; gap:26px; text-align:center}
+  .home-title{font-family:'Bebas Neue',sans-serif; font-size:72px; letter-spacing:4px; color:#fff; text-shadow:0 10px 50px rgba(0,0,0,.6)}
+  .home-sub{font-family:'Oswald',sans-serif; color:#ddd; letter-spacing:2px}
+  .home-cards{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:8px; width:100%}
+  .card{position:relative; overflow:hidden; border-radius:14px; min-height:240px; cursor:pointer; border:1px solid rgba(255,255,255,.08); background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); box-shadow:0 20px 60px rgba(0,0,0,.6); transition:transform .25s, box-shadow .25s}
+  .card:hover{transform:translateY(-4px); box-shadow:0 28px 80px rgba(0,0,0,.75)}
+  .card::before{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.75)); z-index:1}
+  .card img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:grayscale(.12) contrast(1.05)}
+  .card h3{position:absolute; z-index:2; left:20px; bottom:20px; font-family:'Bebas Neue'; font-size:36px; letter-spacing:2px}
+  .card .tag{position:absolute; z-index:2; top:16px; left:16px; font-size:12px; padding:6px 10px; border-radius:8px; background:rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.12); letter-spacing:1px}
+  .card.personnages h3{color:#ff9a72}
+  .card.smm h3{color:#d3453a}
+  .home-foot{position:absolute; bottom:16px; left:16px; color:#bbb; font-size:12px; letter-spacing:1px}
+  .hidden{display:none!important}
+
+  /* =============== FX communs (sirènes / grain / shake) =============== */
+  .shake{animation:shake .5s ease}
+  @keyframes shake{0%{transform:translate(0,0)}25%{transform:translate(2px,-2px)}50%{transform:translate(-2px,1px)}75%{transform:translate(1px,2px)}100%{transform:translate(0,0)}}
+  .fx-sirens{position:absolute; inset:0; pointer-events:none; z-index:4}
+  .fx-flare{position:absolute; width:38vmin; height:38vmin; border-radius:50%; filter:blur(42px); opacity:.18}
+  .fx-red{top:8%; left:24%; background:radial-gradient(circle, rgba(211,69,58,.9), transparent 60%); animation:fxR 1.6s infinite}
+  .fx-blue{bottom:10%; right:20%; background:radial-gradient(circle, rgba(90,162,255,.9), transparent 60%); animation:fxB 1.9s infinite}
+  @keyframes fxR{0%,100%{opacity:.06}50%{opacity:.45}}
+  @keyframes fxB{0%,100%{opacity:.06}50%{opacity:.38}}
+  .fx-smoke{position:absolute; left:-12%; bottom:-12%; width:150%; height:56%; background:radial-gradient(closest-side, rgba(255,255,255,.07), transparent 65%); filter:blur(40px); opacity:.65; animation:fxSmoke 12s linear infinite; z-index:3}
+  @keyframes fxSmoke{0%{transform:translateY(10px)}50%{transform:translateY(-10px)}100%{transform:translateY(10px)}}
+  .fx-grain{position:absolute; inset:0; pointer-events:none; z-index:6; mix-blend-mode:overlay; opacity:.18; background:repeating-linear-gradient(transparent,rgba(255,255,255,.02) 2px)}
+  .fx-vhs{position:absolute; inset:0; pointer-events:none; z-index:7; opacity:.22; background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,.03))}
+  .fx-chromatic{position:absolute; inset:0; pointer-events:none; z-index:5; opacity:.09; background:linear-gradient(90deg,rgba(255,0,0,.4),rgba(0,255,255,.4)); mix-blend-mode:screen}
+
+  /* ================= PERSONNAGES ================= */
+  #personnagesApp{position:absolute; inset:0; background:black; z-index:2000}
+  #personnagesApp .btn-mainhome{
+    position:fixed; top:18px; right:18px; z-index:2100; background:rgba(0,0,0,.6);
+    border:1px solid rgba(255,255,255,.15); color:#fff; padding:.45rem .75rem; border-radius:10px; cursor:pointer; font-family:'Poppins',sans-serif; font-weight:800
+  }
+  #personnagesApp .btn-mainhome:hover{transform:translateY(-2px)}
+
+  /* Effets noir criminel appliqués à la section Personnages */
+  #personnagesApp .pfx{position:absolute; inset:0; z-index:100; pointer-events:none}
+  #personnagesApp .pfx .fx-sirens, 
+  #personnagesApp .pfx .fx-smoke, 
+  #personnagesApp .pfx .fx-grain, 
+  #personnagesApp .pfx .fx-vhs, 
+  #personnagesApp .pfx .fx-chromatic{position:absolute; inset:0}
+
+  /* Base UI Personnages (repris et adapté) */
+  #personnagesApp .accueil { position:absolute; top:0; left:0; width:100%; height:100%; background:black; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3rem; z-index:1000; transition:opacity 1s ease, transform 1s ease; }
+  #personnagesApp .accueil.hidden { opacity:0; transform:scale(1.15); pointer-events:none; }
+  #personnagesApp .tetes { display:flex; gap:4rem; align-items:center; flex-wrap:wrap; justify-content:center; }
+  #personnagesApp .tete-container { display:flex; flex-direction:column; align-items:center; gap:0.8rem; }
+  #personnagesApp .nom-personnage { font-family:'Oswald',sans-serif; font-size:1.2rem; font-weight:700; letter-spacing:.6px; color:#fff; }
+  #personnagesApp .tete { width:150px; height:150px; border-radius:50%; background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; transition:transform 0.3s, box-shadow 0.3s, outline 0.2s; border:3px solid rgba(255,255,255,0.08); }
+  #personnagesApp .tete:hover { transform:scale(1.08); box-shadow:0 8px 30px rgba(0,0,0,0.6); }
+  #personnagesApp .tete.selected { box-shadow:0 0 30px rgba(255,102,204,0.35), 0 8px 40px rgba(0,0,0,0.6); outline:4px solid rgba(255,102,204,0.12); }
+  #personnagesApp .btn-acceder { font-family:'Bebas Neue',sans-serif; font-weight:800; font-size:2.2rem; color:#ff9a72; border:2px solid rgba(247,90,106,0.25); padding:0.9rem 1.6rem; border-radius:50px; cursor:pointer; background-color:rgba(255,255,255,0.02); transition:transform 0.25s, background-color 0.25s; }
+  #personnagesApp .btn-acceder:hover { transform:scale(1.05); background-color:rgba(255,255,255,0.04); }
+
+  #personnagesApp .slider { display:flex; width:2000%; height:100vh; transition:transform 1.2s cubic-bezier(0.77,0,0.175,1); }
+  #personnagesApp .slide { position:relative; min-width:100%; height:100%; display:flex; align-items:center; justify-content:flex-start; padding:5rem 8rem 5rem 12rem; color:white; overflow:hidden; }
+  #personnagesApp .slide::before { content:""; position:absolute; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; filter:blur(6px) brightness(0.45); z-index:-2; }
+  #personnagesApp .slide::after { content:""; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.35); z-index:-1; }
+
+  /* Backgrounds existants */
+  .slide1::before { background-image:url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80'); }
+  .slide2::before { background-image:url('https://images.unsplash.com/photo-1531123414780-f0b0f0c40f32?auto=format&fit=crop&w=1470&q=80'); }
+  .slide3::before { background-image:url('https://images.unsplash.com/photo-1520975921921-6f2eea9f4b58?auto=format&fit=crop&w=1470&q=80'); }
+  .slide4::before { background-image:url('https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1470&q=80'); }
+  .slide5::before { background-image:url('https://images.unsplash.com/photo-1505685296765-3a2736de412f?auto=format&fit=crop&w=1470&q=80'); }
+  .slide6::before { background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1470&q=80'); }
+  .slide7::before { background-image:url('https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1470&q=80'); }
+  .slide8::before { background-image:url('https://images.unsplash.com/photo-1517817748493-1a89df6b7e3b?auto=format&fit=crop&w=1470&q=80'); }
+  .slide9::before { background-image:url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1470&q=80'); }
+  .slide10::before { background-image:url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1470&q=80'); }
+  .slide11::before,.slide12::before,.slide13::before,.slide14::before,.slide15::before { background-image:url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1470&q=80'); }
+  .slide16::before,.slide17::before,.slide18::before,.slide19::before,.slide20::before { background-image:url('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=1470&q=80'); }
+
+  /* Typo améliorée Personnages */
+  #personnagesApp h1 { font-family:'Oswald',sans-serif; font-weight:700; font-size:3.3rem; margin-bottom:1.25rem; letter-spacing:1px; color:#ffffff; text-shadow:0 0 20px rgba(247,90,106,0.35); }
+  #personnagesApp p { font-family:'Oswald',sans-serif; font-weight:400; font-size:1.18rem; line-height:1.55; color:#f0e8e8; letter-spacing:.5px; background:none; -webkit-text-fill-color:#f0e8e8; }
+
+  #personnagesApp .nav { position:fixed; top:50%; width:100%; display:flex; justify-content:space-between; transform:translateY(-50%); padding:0 1rem; pointer-events:none; z-index:1100; }
+  #personnagesApp .nav button { pointer-events:auto; background:rgba(0,0,0,0.55); border:2px solid rgba(255,255,255,.2); border-radius:50%; width:60px; height:60px; font-size:2.2rem; color:#fff; cursor:pointer; transition:background-color 0.3s, transform 0.2s; }
+  #personnagesApp .nav button:hover { background:#ff66cc; color:black; transform:scale(1.08); }
+  #personnagesApp .btn-accueil { position:absolute; top:20px; left:20px; background:rgba(0,0,0,0.55); border:2px solid rgba(255,255,255,.2); color:#fff; font-size:1.05rem; border-radius:30px; padding:0.45rem 0.85rem; cursor:pointer; z-index:1050; }
+  #personnagesApp .btn-accueil:hover { background:#ff66cc; color:black; }
+
+  /* ================= SMM ================= */
+  #smmApp{position:absolute; inset:0; background:#000; z-index:2000}
+  .smm-scene{position:absolute; inset:0; display:flex; align-items:center; justify-content:center}
+  .smm-bg{position:absolute; inset:0; z-index:0; overflow:hidden; filter:contrast(1.06) saturate(1.08)}
+  .smm-bg::before{content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.88)); z-index:2}
+  .smm-bg img{position:absolute; width:112%; height:112%; left:-6%; top:-6%; object-fit:cover; opacity:.98; filter:grayscale(.08) contrast(1.04); transform:scale(1.06); animation:smmKen 32s linear infinite}
+  @keyframes smmKen{0%{transform:scale(1.06)}50%{transform:scale(1.12) translate3d(1.5%,-1.5%,0)}100%{transform:scale(1.06)}}
+  .smm-sirens{position:absolute; inset:0; pointer-events:none; z-index:4}
+  .smm-flare{position:absolute; width:38vmin; height:38vmin; border-radius:50%; filter:blur(42px); opacity:.18}
+  .smm-red{top:8%; left:24%; background:radial-gradient(circle, rgba(211,69,58,.9), transparent 60%); animation:smmR 1.6s infinite}
+  .smm-blue{bottom:10%; right:20%; background:radial-gradient(circle, rgba(90,162,255,.9), transparent 60%); animation:smmB 1.9s infinite}
+  @keyframes smmR{0%,100%{opacity:.06}50%{opacity:.45}}
+  @keyframes smmB{0%,100%{opacity:.06}50%{opacity:.38}}
+  .smm-smoke{position:absolute; left:-12%; bottom:-12%; width:150%; height:56%; background:radial-gradient(closest-side, rgba(255,255,255,.07), transparent 65%); filter:blur(40px); opacity:.65; animation:smmSmoke 12s linear infinite; z-index:3}
+  @keyframes smmSmoke{0%{transform:translateY(10px)}50%{transform:translateY(-10px)}100%{transform:translateY(10px)}}
+  .smm-tape{position:absolute; left:-14%; top:14%; transform:rotate(-12deg); background:var(--tape); color:#111; padding:8px 240px; font-weight:900; letter-spacing:2px; border:2px solid rgba(0,0,0,.18); z-index:9}
+  .smm-tape::after{content:"POLICE LINE — DO NOT CROSS — LAPD";}
+  .smm-lowrider{position:absolute; left:6%; bottom:6%; width:44vmin; height:12vmin; z-index:4; opacity:.9; animation:smmBounce 3.6s ease-in-out infinite}
+  .smm-lowrider svg path{stroke:rgba(255,255,255,.18); stroke-width:6; fill:none; filter:drop-shadow(0 6px 18px rgba(0,0,0,.6))}
+  @keyframes smmBounce{0%,100%{transform:translateY(6px)}50%{transform:translateY(-6px)}}
+  .smm-grain{position:absolute; inset:0; pointer-events:none; z-index:6; mix-blend-mode:overlay; opacity:.18; background:repeating-linear-gradient(transparent,rgba(255,255,255,.02) 2px)}
+  .smm-vhs{position:absolute; inset:0; pointer-events:none; z-index:7; opacity:.22; background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,.03))}
+  .smm-chromatic{position:absolute; inset:0; pointer-events:none; z-index:5; opacity:.09; background:linear-gradient(90deg,rgba(255,0,0,.4),rgba(0,255,255,.4)); mix-blend-mode:screen}
+
+  .smm-slide{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8vmin 6vmin; text-align:center; z-index:10; opacity:0; transform:translateX(120%); transition:transform .9s cubic-bezier(.2,.9,.2,1), opacity .6s}
+  .smm-slide.active{opacity:1; transform:translateX(0)}
+  .smm-slide.left{transform:translateX(-120%); opacity:0}
+
+  .smm-title{font-family:'Bebas Neue',sans-serif; letter-spacing:3px; font-size:10vmin; line-height:.95; text-transform:uppercase; color:var(--accent); text-shadow:0 4px 40px rgba(0,0,0,.8)}
+  .smm-sub{font-size:3vmin; color:#e8e8e8; margin-top:.6rem; text-transform:uppercase; letter-spacing:2px}
+  .smm-text{max-width:min(1100px,90vw); margin-top:1rem; font-size:2.3vmin; line-height:1.6; color:#e5e5e5}
+  .smm-stamp{margin-top:1.1rem; display:inline-block; padding:.45rem .8rem; border:2px solid rgba(255,255,255,.08); background:rgba(0,0,0,.45); transform:rotate(-4deg); color:var(--gold); font-weight:800; letter-spacing:2px}
+
+  .smm-hud{position:fixed; top:16px; left:16px; z-index:40; font-size:12px; color:#bbb; letter-spacing:1px}
+  .smm-audio{position:fixed; top:16px; right:16px; z-index:40; display:flex; gap:8px; align-items:center}
+  .smm-toggle{background:rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.12); color:#fff; padding:.5rem .8rem; border-radius:8px; cursor:pointer; font-weight:800}
+  .smm-dots{position:fixed; bottom:26px; left:24px; display:flex; gap:8px; z-index:40}
+  .smm-dot{width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,.08)}
+  .smm-dot.active{background:linear-gradient(90deg,var(--accent),#ff9a72); box-shadow:0 8px 24px rgba(211,69,58,.18)}
+  .smm-nav{position:fixed; bottom:24px; right:24px; display:flex; gap:10px; z-index:40}
+  .smm-btn{background:rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.12); color:#fff; padding:.6rem .9rem; border-radius:10px; cursor:pointer; font-weight:800}
+  .smm-btn.primary{background:linear-gradient(90deg,var(--accent),#f38b6b); border:none; color:#0d0d0d}
+  .smm-btn:hover{transform:translateY(-2px)}
+
+  @media(max-width:920px){
+    .home-cards{grid-template-columns:1fr}
+    .smm-tape,.smm-lowrider{display:none}
+    .smm-title{font-size:12vmin}
+    .smm-text{font-size:3vmin}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= ACCUEIL ================= -->
+<section class="home" id="homeMain">
+  <div class="home-bg"><img src="https://images.unsplash.com/photo-1520975921921-6f2eea9f4b58?auto=format&fit=crop&w=1920&q=60" alt=""></div>
+  <div class="home-fx">
+    <div class="flare red"></div>
+    <div class="flare blue"></div>
+    <div class="home-smoke"></div>
+  </div>
+  <div class="home-wrap">
+    <div class="home-title">RP — PORTAIL</div>
+    <div class="home-sub">Choisis un univers</div>
+    <div class="home-cards">
+      <div class="card personnages" id="goPpl">
+        <span class="tag">BACKGROUND</span>
+        <img src="https://cdn.discordapp.com/attachments/1281365097675231243/1450197382787633357/5edebd779bd81_capture_lopez_du_36.webp?ex=6941a90f&is=6940578f&hm=31384a9fc4b3ccae4bf493cf6d823dd3e0220133b9e82b4653253a48da398c16&" alt="">
+        <h3>Background Personnages</h3>
+      </div>
+      <div class="card smm" id="goSmm">
+        <span class="tag">DOSSIER GANG</span>
+        <img src="https://cdn.discordapp.com/attachments/1281365097675231243/1450196968554102932/6LQOMZNVONBY7P575EZRBSJFBU.webp?ex=6941a8ac&is=6940572c&hm=3e5023606370098abef52eee84b48b961b6a03baf6bb381db721c78732e24507&" alt="">
+        <h3>Gitan</h3>
+      </div>
+    </div>
+  </div>
+  <div class="home-foot">← / → pour naviguer • Retour: Échap</div>
+</section>
+
+<!-- ================= PERSONNAGES ================= -->
+<section id="personnagesApp" class="hidden">
+  <button class="btn-mainhome" onclick="showMain()">⟵ Accueil principal</button>
+
+  <!-- Effets FX section Personnages -->
+  <div class="pfx" aria-hidden="true">
+    <div class="fx-sirens"><div class="fx-flare fx-red"></div><div class="fx-flare fx-blue"></div></div>
+    <div class="fx-smoke"></div>
+    <div class="fx-chromatic"></div>
+    <div class="fx-grain"></div>
+    <div class="fx-vhs"></div>
+  </div>
+
+  <!-- ACCUEIL (persos) -->
+  <div class="accueil" id="accueil">
+    <div style="text-align:center">
+      <h1 style="font-family:'Bebas Neue',sans-serif; font-size:2.8rem; font-weight:800; letter-spacing:2px;">Bienvenue — Choisis un personnage</h1>
+      <p style="margin-top:0.8rem;color:rgba(255,255,255,0.7);max-width:760px;font-family:'Oswald',sans-serif;">Sélectionne un personnage puis clique sur "Cliquer pour accéder".</p>
+    </div>
+
+    <div class="tetes" role="list" aria-label="Choix personnage">
+      <div class="tete-container" role="listitem">
+        <div class="nom-personnage">Tyson Lopez</div>
+        <div class="tete" id="tete-Tyson" data-slide="0" tabindex="0" style="background-image: url('https://image.noelshack.com/fichiers/2025/32/7/1754815220-d207ff7e9022a6fa309c32c6b3730b47.jpg');"></div>
+      </div>
+      <div class="tete-container" role="listitem">
+        <div class="nom-personnage">Django Lopez</div>
+        <div class="tete" id="tete-tariq" data-slide="5" tabindex="0" style="background-image: url('https://image.noelshack.com/fichiers/2025/32/7/1754815220-d207ff7e9022a6fa309c32c6b3730b47.jpg');"></div>
+      </div>
+      <div class="tete-container" role="listitem">
+        <div class="nom-personnage">Jason Lopez</div>
+        <div class="tete" id="tete-nemo" data-slide="10" tabindex="0" style="background-image: url('https://image.noelshack.com/fichiers/2025/32/7/1754815220-d207ff7e9022a6fa309c32c6b3730b47.jpg');"></div>
+      </div>
+      <div class="tete-container" role="listitem">
+        <div class="nom-personnage">Joe Lopez</div>
+        <div class="tete" id="tete-laz" data-slide="15" tabindex="0" style="background-image: url('https://image.noelshack.com/fichiers/2025/32/7/1754815220-d207ff7e9022a6fa309c32c6b3730b47.jpg');"></div>
+      </div>
+    </div>
+
+    <button class="btn-acceder" id="btnAcceder">Cliquer pour accéder</button>
+  </div>
+
+  <!-- SLIDER PERSONNAGES -->
+  <div class="slider" id="slider" aria-live="polite">
+    <!-- Tyson 0-4 -->
+    <div class="slide slide1"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Tyson Lopez</h1><p>Tyson Lopez est né au sein d’une famille gitanne, entre route et quartiers.
+      Arrivé très jeune aux États-Unis, fils unique, il a appris tôt à porter le nom. </p></div></div>
+    <div class="slide slide2"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Personnalité et scolarité</h1><p>Solitaire et posé, Tyson est discret mais brillant.
+      Sa rigueur et son sens de l’analyse ont fait de lui un stratège naturel.</p></div></div>
+    <div class="slide slide3"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Le choc universitaire</h1><p>Les frais, la pression, l’exclusion de l’université après un conflit avec l’administration : tournant fondateur. Il tombera dans la débrouille avant de réorienter sa colère en projet.</p></div></div>
+    <div class="slide slide4"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Descente et survie</h1><p>Travail au noir, petits délits puis glissade vers des affaires plus graves. Tyson garde cependant une vision : construire quelque chose à lui.</p></div></div>
+    <div class="slide slide5"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>PawnShop, la revanche</h1><p>Rencontre avec son associé, début du projet PawnShop : un lieu de rue, sa façon de reprendre sa vie en main et d’imposer ses règles.</p></div></div>
+    <!-- Tariq 5-9 -->
+    <div class="slide slide6"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Django Lopez</h1><p>Django a grandi entre Atlanta et Los Angeles.
+      Le terrain et la musique l’ont guidé loin des études.</p></div></div>
+    <div class="slide slide7"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Enfance et scolarité</h1><p>Élève moyen, roi du terrain. La mort de son père l’a fait grandir vite. Sa mère voulait mieux, lui suivait son chemin.</p></div></div>
+    <div class="slide slide8"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Début dans la vente</h1><p> Il découvre son talent pour vendre. À 17 ans, il part pour L.A. et s'implique dans la vente de rue.</p></div></div>
+    <div class="slide slide9"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>La plage & Les Gitans</h1><p>La rue, le pawnshop… Loyautés et tentations rapides. Django devient vite un gars respecté du milieu.</p></div></div>
+    <div class="slide slide10"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>PawnShop</h1><p>Il rejoint le projet PawnShop, amène vibe, réseau et salle pleine. Loyauté, ambition, flow : c’est son ADN.</p></div></div>
+    <!-- Nemo 10-14 -->
+    <div class="slide slide11"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Jason Lopez</h1><p>Jason a grandi dans le silence : père incarcéré, frère abattu. Il comprend très jeune que voir = survivre et parler = mourir.</p></div></div>
+    <div class="slide slide12"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Un fantôme parmi les vivants</h1><p>Invisible, jamais de photos, jamais de preuves. Il devient l’ombre des coins de rue, celui que tu croises sans le remarquer.</p></div></div>
+    <div class="slide slide13"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Première victoire</h1><p>Il piège un flic ripou en l’enregistrant — et découvre le pouvoir d’un secret. C’est son premier ticket vers la dominance.</p></div></div>
+    <div class="slide slide14"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Rôle</h1><p>Il surveille, observe, traque les menaces. Il sait ce que les autres ignorent encore. Son silence donne le tempo.</p></div></div>
+    <div class="slide slide15"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Finalité</h1><p>Faire en sorte que les Gitans ne soit jamais surpris.“On peut frapper un homme. Pas l’ombre.”</p></div></div>
+    <!-- Laz 15-19 -->
+    <div class="slide slide16"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Joe Lopez</h1><p>Né à South Central, élevé par une mère qui bossait jour et nuit à l’hôpital. Il a vite compris que la pauvreté ne te demande pas ton avis avant de t’écraser.</p></div></div>
+    <div class="slide slide17"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Le surnom "Voleur”</h1><p>Au début, c’était ironique : il volé des voiture dans toute la ville</p></div></div>
+    <div class="slide slide18"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>La bascule Crack</h1><p>Quand la vague du crack a frappé le quartier, Doc a vu une opportunité que les autres prenaient trop au sérieux ou pas assez.Lui ? Il l’a prise comme la seule porte de sortie.</p></div></div>
+    <div class="slide slide19"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Chez les Gitans</h1><p>Dealer principal, gestion des stocks, du réseau de corner boys et des collectes d’argent. Il connaît chaque client par son manque, et chaque street par son potentiel.</p></div></div>
+    <div class="slide slide20"><button class="btn-accueil" onclick="retourAccueil()">&#8592; Accueil</button><div class="slide-content"><h1>Philosophie du hustle</h1><p>“Dans un monde qui veut te laisser crever, je choisis qui vit mieux que les autres.”Et dans son monde, SMM passe toujours en premier.</p></div></div>
+  </div>
+
+  <!-- NAV PERSONNAGES -->
+  <div class="nav" aria-hidden="false">
+    <button aria-label="Slide précédente" onclick="prevSlide()">&#10094;</button>
+    <button aria-label="Slide suivante" onclick="nextSlide()">&#10095;</button>
+  </div>
+</section>
+
+<!-- ================= SMM ================= -->
+<section id="smmApp" class="hidden">
+  <button class="btn-mainhome" style="left:18px;right:auto" onclick="showMain()">⟵ Accueil principal</button>
+
+  <div class="smm-scene" id="smm-scene">
+    <div class="smm-bg"><img id="smm-bg" src="https://images.unsplash.com/photo-1520975921921-6f2eea9f4b58?auto=format&fit=crop&w=1920&q=60" alt=""></div>
+    <div class="smm-sirens"><div class="smm-flare smm-red"></div><div class="smm-flare smm-blue"></div></div>
+    <div class="smm-smoke"></div>
+    <div class="smm-tape" aria-hidden="true"></div>
+    <div class="smm-lowrider" aria-hidden="true">
+      <svg viewBox="0 0 600 170" preserveAspectRatio="xMidYMid slice"><path d="M20 120 C120 40 200 40 300 80 C400 120 500 100 580 80" /></svg>
+    </div>
+    <div class="smm-chromatic"></div>
+    <div class="smm-grain"></div>
+    <div class="smm-vhs"></div>
+
+    <!-- Slides SMM -->
+    <section class="smm-slide active" data-bg="https://images.unsplash.com/photo-1520975921921-6f2eea9f4b58?auto=format&fit=crop&w=1920&q=60">
+      <h1 class="smm-title">GITAN</h1>
+      <div class="smm-sub">Famille Gitane</div>
+      <div class="smm-text">Famille, honneur, silence. Ceux qui savent comprennent.</div>
+      <span class="smm-stamp">CONFIDENTIEL</span>
+    </section>
+
+    <section class="smm-slide" data-bg="https://images.unsplash.com/photo-1511914265872-c40672604a66?auto=format&fit=crop&w=1920&q=60">
+      <h1 class="smm-title">LORE — LEAD</h1>
+      <div class="smm-sub">“Charclo” • Résolu, précis, silencieux</div>
+      <div class="smm-text">Né dans la famille, la rue l’a endurci, les anciens l’ont forgé.
+        Il parle peu, chaque mot a du poids.
+        L’honneur avant tout, l’argent au service des siens.</div>
+      <span class="smm-stamp">WANTED — LAPD</span>
+    </section>
+
+    <section class="smm-slide" data-bg="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1920&q=60">
+      <h1 class="smm-title">LORE — GROUPE</h1>
+      <div class="smm-sub">Né de la débrouille • forgé par le chaos</div>
+      <div class="smm-text">La Familia est un clan structuré né dans les quartiers populaires, forgé par la route et les alliances de sang.
+        À l’origine, quelques familles unies par la nécessité, la débrouille et la protection mutuelle. Les anciens ont posé les bases lors d’un passage commun par les marges du système, là où les règles s’écrivent entre hommes, pas sur le papier.
+        
+        Le clan s’est construit autour d’un code strict : loyauté absolue, silence, entraide. Chaque décision est validée par les figures fondatrices, issues de lignées respectées, ayant grandi dans des cités oubliées et des terrains laissés à l’abandon.
+        
+        Aujourd’hui, La Familia n’est pas une bande, mais une structure fermée, transmise, reconnue, et crainte par ceux qui savent.</div>
+      <span class="smm-stamp">ARCHIVE</span>
+    </section>
+
+    <section class="smm-slide" data-bg="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=60">
+      <h1 class="smm-title">TEMPS DE JEU — FIVEM</h1>
+      <div class="smm-sub">Expérience RP cumulée</div>
+      <div class="smm-text">1800h de jeu chacun , nous sommes des joueurs expérimentés qui vont vous proposer quelque chose de qualitatifs :)</div>
+      <span class="smm-stamp">VALIDÉ</span>
+    </section>
+
+    <section class="smm-slide" data-bg="https://images.unsplash.com/photo-1517817748493-1a89df6b7e3b?auto=format&fit=crop&w=1920&q=60">
+      <h1 class="smm-title">LISTE — MEMBRES</h1>
+      <div class="smm-sub">ID Discord • Pseudo</div>
+      <div class="smm-text">6zero <br/>taylan6o <br/>natha_nsmt <br/>sushiroxxor <br/><i></i></div>
+      <span class="smm-stamp">INTERNE</span>
+    </section>
+
+    <section class="smm-slide" data-bg="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1920&q=60">
+      <h1 class="smm-title">OBJECTIF — GROUPE</h1>
+      <div class="smm-sub">Influence • Territoire • Image</div>
+      <div class="smm-text"> 📌 Court terme (installation)
+
+        Établir une présence stable sur le secteur
+        
+        Sécuriser une façade légale : garage auto, barber ou commerce familial
+        
+        Écarter les tensions locales sans conflit ouvert
+        
+        Imposer un code interne strict : discrétion, efficacité, aucun geste inutile
+        
+        Identifier des contacts fiables pour assurer les besoins du clan
+        
+        📌 Moyen terme (territoire & influence)
+        
+        Faire reconnaître le nom du clan (signe, réputation, respect)
+        
+        Développer une économie autonome, hors dépendance extérieure
+        
+        Mettre en place une protection discrète des commerces du quartier
+        
+        Structurer un réseau logistique discret
+        
+        Recruter avec rigueur : loyauté avant tout, pas d’imprévisibles
+        
+        📌 Long terme (puissance & façade)
+        
+        Ancrer les revenus dans des activités légitimes :
+        
+        Événementiel (soirées, concerts privés)
+        
+        Restauration rapide / foodtruck
+        
+        Services logistiques et entretien
+        
+        Étendre les connexions hors du territoire local
+        
+        Devenir une autorité consultée lors des conflits sensibles
+        
+        Soutenir la communauté pour asseoir la légitimité du clan</div>
+      <span class="smm-stamp">PRIORITY</span>
+    </section>
+
+    <section class="smm-slide" data-bg="https://images.unsplash.com/photo-1505685296765-3a2736de412f?auto=format&fit=crop&w=1920&q=60">
+      <h1 class="smm-title">ACTIVITÉS — ILLÉGALES </h1>
+      <div class="smm-sub">Fiction — aucune instruction réelle</div>
+      <div class="smm-text">Trafic de rue , Braquage, Vol de véhicules. , Vente de drogue</div>
+      <span class="smm-stamp"></span>
+    </section>
+
+    <section class="smm-slide" data-bg="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1920&q=60">
+      <h1 class="smm-title">FAÇADES & BUT HRP</h1>
+      <div class="smm-sub">Club • Barbershop • Foodtruck</div>
+      <div class="smm-text">Façades propres pour scènes sociales et économie claire. <b>But HRP :</b> créer des arcs profonds, offrir du jeu aux autres factions, et respecter la cohérence du serveur.</div>
+      <span class="smm-stamp">ROLEPLAY</span>
+    </section>
+
+    <!-- HUD + NAV SMM -->
+    <div class="smm-hud">Slide <span id="smm-i">1</span>/8 — ← → / Esc</div>
+    <div class="smm-audio"><button class="smm-toggle" id="smm-audioBtn">Ambiance: OFF</button></div>
+    <div class="smm-dots" id="smm-dots"></div>
+    <div class="smm-nav">
+      <button class="smm-btn" id="smm-prev">Préc</button>
+      <button class="smm-btn primary" id="smm-next">Suiv</button>
+    </div>
+  </div>
+
+  <!-- Audio SMM -->
+  <audio id="smm-amb" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/29/audio_3e2f6d0e5b.mp3?filename=police-siren-ambient-19410.mp3" type="audio/mpeg">
+  </audio>
+</section>
+
+<script>
+  /* ========= ROUTEUR ========= */
+  const home = document.getElementById('homeMain');
+  const appP = document.getElementById('personnagesApp');
+  const appS = document.getElementById('smmApp');
+  const goPpl = document.getElementById('goPpl');
+  const goSmm = document.getElementById('goSmm');
+
+  function showMain(){
+    home.classList.remove('hidden');
+    appP.classList.add('hidden');
+    appS.classList.add('hidden');
+  }
+  function showPpl(){
+    home.classList.add('hidden');
+    appS.classList.add('hidden');
+    appP.classList.remove('hidden');
+  }
+  function showSmm(){
+    home.classList.add('hidden');
+    appP.classList.add('hidden');
+    appS.classList.remove('hidden');
+
+    // Démarrer SMM sur la 1ère diapo (index 0) + MAJ UI
+    if (typeof window.smmStartAt === 'function') window.smmStartAt(0);
+
+    // Bloque le tout premier clic (sinon ça avance d'une slide)
+    window._blockNextClick = true;
+    setTimeout(()=> window._blockNextClick = false, 600);
+  }
+  goPpl.addEventListener('click', showPpl);
+  goSmm.addEventListener('click', showSmm);
+
+  /* ========= PERSONNAGES ========= */
+  ;(()=> {
+    let currentSlide = 0;
+    const slider = document.getElementById('slider');
+    const slides = document.querySelectorAll('#personnagesApp .slide');
+    const totalSlides = slides.length;
+    const accueil = document.getElementById('accueil');
+    const btnAcceder = document.getElementById('btnAcceder');
+    let selectedSlide = null;
+
+    document.querySelectorAll('#personnagesApp .tete').forEach(tete => {
+      tete.addEventListener('click', () => {
+        document.querySelectorAll('#personnagesApp .tete').forEach(t => t.classList.remove('selected'));
+        tete.classList.add('selected');
+        selectedSlide = parseInt(tete.dataset.slide, 10);
+      });
+      tete.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tete.click(); }
+      });
+    });
+
+    if(btnAcceder){
+      btnAcceder.addEventListener('click', () => {
+        if (selectedSlide !== null) {
+          accueil.classList.add('hidden');
+          setTimeout(() => { currentSlide = selectedSlide; updateSlide(); }, 500);
+        } else { alert("Sélectionne un personnage !"); }
+      });
+    }
+
+    function updateSlide() {
+      slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+      const focused = slides[currentSlide].querySelector('h1') || slides[currentSlide].querySelector('p');
+      if (focused) focused.setAttribute('tabindex', '-1');
+      document.getElementById('personnagesApp').classList.add('shake');
+      setTimeout(()=>document.getElementById('personnagesApp').classList.remove('shake'), 350);
+    }
+
+    window.nextSlide = function(){ currentSlide = (currentSlide + 1) % totalSlides; updateSlide(); }
+    window.prevSlide = function(){ currentSlide = (currentSlide - 1 + totalSlides) % totalSlides; updateSlide(); }
+    window.retourAccueil = function(){
+      accueil.classList.remove('hidden');
+      selectedSlide = null;
+      document.querySelectorAll('#personnagesApp .tete').forEach(t => t.classList.remove('selected'));
+      currentSlide = 0; updateSlide();
+    }
+
+    document.addEventListener('keydown', e => {
+      if(appP.classList.contains('hidden')) return;
+      if (e.key === 'ArrowRight') nextSlide();
+      else if (e.key === 'ArrowLeft') prevSlide();
+      else if (e.key === 'Escape') showMain();
+    });
+
+    document.addEventListener('mousemove', (e)=>{
+      if(appP.classList.contains('hidden')) return;
+      const cx = innerWidth/2, cy = innerHeight/2;
+      const dx = (e.clientX - cx)/cx, dy = (e.clientY - cy)/cy;
+      appP.querySelector('.fx-sirens').style.transform = `translate(${dx*6}px, ${dy*6}px)`;
+      appP.querySelector('.fx-smoke').style.transform  = `translate(${dx*10}px, ${10+dy*8}px)`;
+    });
+
+    updateSlide();
+  })();
+
+  /* ========= SMM ========= */
+  ;(()=> {
+    const slides = [...document.querySelectorAll('#smmApp .smm-slide')];
+    const bg = document.getElementById('smm-bg');
+    const dotsWrap = document.getElementById('smm-dots');
+    const idxBox = document.getElementById('smm-i');
+    const scene = document.getElementById('smm-scene');
+
+    const amb = document.getElementById('smm-amb');
+    const audioBtn = document.getElementById('smm-audioBtn');
+    let idx = 0, audioOn = false;
+
+    // Dots
+    slides.forEach((_,i)=>{
+      const d = document.createElement('div');
+      d.className = 'smm-dot' + (i===0?' active':'');
+      d.addEventListener('click', (ev)=>{ ev.stopPropagation(); go(i); });
+      dotsWrap.appendChild(d);
+    });
+    const dots = [...document.querySelectorAll('#smmApp .smm-dot')];
+
+    function setBG(url){
+      scene.classList.add('shake');
+      bg.style.opacity = 0.7;
+      setTimeout(()=>{
+        bg.src = url;
+        bg.onload = ()=>{ bg.style.opacity = 1; }
+        setTimeout(()=> scene.classList.remove('shake'), 350);
+      }, 90);
+    }
+
+    function go(n){
+      const next = (n+slides.length)%slides.length;
+      slides[idx].classList.remove('active');
+      slides[idx].classList.add('left');
+      slides[next].classList.remove('left');
+      setTimeout(()=> slides[next].classList.add('active'), 20);
+      setBG(slides[next].dataset.bg);
+      idx = next;
+      idxBox.textContent = idx+1;
+      dots.forEach((d,i)=> d.classList.toggle('active', i===idx));
+    }
+
+    document.getElementById('smm-next').onclick = (e)=>{ e.stopPropagation(); go(idx+1); };
+    document.getElementById('smm-prev').onclick = (e)=>{ e.stopPropagation(); go(idx-1); };
+
+    document.addEventListener('keydown', e=>{
+      if(appS.classList.contains('hidden')) return;
+      if(e.key==='ArrowRight') go(idx+1);
+      if(e.key==='ArrowLeft') go(idx-1);
+      if(e.key==='Escape') showMain();
+    });
+
+    document.addEventListener('click', (e)=>{
+      if(appS.classList.contains('hidden')) return;
+      if(window._blockNextClick) return; // <-- empêche l'auto-advance au tout premier clic après ouverture
+      const withinUI = e.target.closest('.smm-nav') || e.target.closest('.smm-audio') || e.target.closest('.smm-dots') || e.target.closest('.btn-mainhome');
+      if(!withinUI) go(idx+1);
+    });
+
+    audioBtn.onclick = (e)=>{
+      e.stopPropagation();
+      audioOn = !audioOn;
+      if(audioOn){ amb.volume = .35; amb.play().catch(()=>{}); audioBtn.textContent='Ambiance: ON'; }
+      else { amb.pause(); audioBtn.textContent='Ambiance: OFF'; }
+    };
+
+    document.addEventListener('mousemove', (e)=>{
+      if(appS.classList.contains('hidden')) return;
+      const cx = innerWidth/2, cy = innerHeight/2;
+      const dx = (e.clientX - cx)/cx, dy = (e.clientY - cy)/cy;
+      document.querySelector('#smmApp .smm-sirens').style.transform = `translate(${dx*6}px, ${dy*6}px)`;
+      document.querySelector('#smmApp .smm-smoke').style.transform = `translate(${dx*10}px, ${10+dy*8}px)`;
+    });
+
+    // Helper pour démarrer à un index donné (utilisé par showSmm)
+    window.smmStartAt = function(startIndex){
+      slides.forEach(s=>s.classList.remove('active','left'));
+      idx = ((startIndex|0)+slides.length)%slides.length;
+      slides[idx].classList.add('active');
+      setBG(slides[idx].dataset.bg);
+      idxBox.textContent = idx+1;
+      dots.forEach((d,i)=> d.classList.toggle('active', i===idx));
+    };
+
+    // init visuel de fond
+    setBG(slides[0].dataset.bg);
+  })();
+</script>
+</body>
+</html>
