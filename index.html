@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAXI - Dossier de Reprise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            background: #000;
+            color: #fff;
+        }
+
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 1s ease;
+        }
+
+        .welcome-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .welcome-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 6em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite, float 3s ease-in-out infinite;
+            text-shadow: 0 0 80px rgba(255, 215, 0, 0.5);
+            z-index: 2;
+            letter-spacing: 2px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .enter-button {
+            margin-top: 60px;
+            padding: 25px 80px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            background: transparent;
+            border: 3px solid #FFD700;
+            color: #FFD700;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .enter-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: #FFD700;
+            transition: width 0.6s, height 0.6s, top 0.6s, left 0.6s;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+
+        .enter-button:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .enter-button:hover {
+            color: #000;
+            box-shadow: 0 0 50px #FFD700;
+            transform: scale(1.05);
+        }
+
+        .space-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .space-transition.active {
+            opacity: 1;
+            animation: spaceJump 2s ease-in-out;
+        }
+
+        @keyframes spaceJump {
+            0% { transform: scale(1); }
+            50% { transform: scale(50); opacity: 1; }
+            100% { transform: scale(100); opacity: 0; }
+        }
+
+        .warp-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+            top: 50%;
+            left: -100%;
+            width: 100%;
+            animation: warp 0.5s linear infinite;
+        }
+
+        @keyframes warp {
+            0% { left: -100%; width: 100%; }
+            100% { left: 100%; width: 200%; }
+        }
+
+        .main-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-container.visible {
+            display: block;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FFD700;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particleFloat 20s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translate(0, 100vh) scale(0); }
+            50% { opacity: 1; }
+            100% { transform: translate(100px, -100vh) scale(1); opacity: 0; }
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            padding: 100px 80px 160px 80px;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            perspective: 1000px;
+        }
+
+        .slide.active {
+            display: flex;
+            animation: slideAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideAppear {
+            from { opacity: 0; transform: scale(0.9) translateY(50px) rotateX(10deg); }
+            to { opacity: 1; transform: scale(1) translateY(0) rotateX(0deg); }
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            z-index: 10000;
+            transition: width 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 215, 0, 0.15);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            color: #FFD700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 8000;
+            opacity: 0.7;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            transform: scale(1.1) rotate(90deg);
+            opacity: 1;
+        }
+
+        .auto-play-btn {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 30px;
+            background: rgba(255, 215, 0, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 30px;
+            color: #FFD700;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 9000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .auto-play-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .auto-play-btn.active {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: #FFD700;
+        }
+
+        .slide-1 {
+            background: #000000;
+        }
+
+        .glitch-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.8em;
+            font-weight: 900;
+            text-align: center;
+            position: relative;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: glitch 3s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(-5px, 5px); }
+            94% { transform: translate(5px, -5px); }
+            96% { transform: translate(-5px, -5px); }
+        }
+
+        .subtitle {
+            font-size: 1.6em;
+            margin-top: 30px;
+            opacity: 0.9;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        .slide-2 {
+            background: #000000;
+        }
+
+        .profile-container {
+            max-width: 900px;
+            background: rgba(255, 215, 0, 0.05);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 30px;
+            padding: 60px;
+        }
+
+        .profile-section {
+            margin-bottom: 40px;
+        }
+
+        .profile-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6em;
+            color: #FFD700;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .profile-text {
+            font-size: 1.2em;
+            line-height: 1.8;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .profile-highlight {
+            color: #FFD700;
+            font-weight: 600;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .contact-box {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #FFD700;
+        }
+
+        .contact-label {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .contact-value {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #FFD700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            max-width: 1400px;
+        }
+
+        .stat-card {
+            background: rgba(255, 215, 0, 0.05);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(45deg) translateY(-100%); }
+            100% { transform: rotate(45deg) translateY(100%); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.4);
+            border-color: #FFD700;
+        }
+
+        .stat-number {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4em;
+            font-weight: 800;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .services-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 50px;
+            max-width: 1200px;
+        }
+
+        .service-box {
+            background: rgba(255, 215, 0, 0.05);
+            border: 2px solid transparent;
+            border-radius: 25px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .service-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 25px;
+            padding: 2px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .service-box:hover::before {
+            opacity: 1;
+        }
+
+        .service-box:hover {
+            transform: translateZ(50px) rotateX(5deg);
+            box-shadow: 0 30px 80px rgba(255, 215, 0, 0.3);
+        }
+
+        .service-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .service-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8em;
+            color: #FFD700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .service-desc {
+            font-size: 1.2em;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        .circuit-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: 
+                repeating-linear-gradient(0deg, #FFD700 0px, #FFD700 1px, transparent 1px, transparent 50px),
+                repeating-linear-gradient(90deg, #FFD700 0px, #FFD700 1px, transparent 1px, transparent 50px);
+            animation: circuitMove 20s linear infinite;
+        }
+
+        @keyframes circuitMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .tech-content {
+            z-index: 2;
+            max-width: 1200px;
+        }
+
+        .tech-list {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .tech-item {
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
+            border-left: 5px solid #FFD700;
+            padding: 35px 40px;
+            border-radius: 10px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-item::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: rgba(255, 215, 0, 0.2);
+            transition: width 0.4s ease;
+        }
+
+        .tech-item:hover::after {
+            width: 100%;
+        }
+
+        .tech-item:hover {
+            transform: translateX(20px);
+            box-shadow: -10px 0 40px rgba(255, 215, 0, 0.4);
+        }
+
+        .tech-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8em;
+            color: #FFD700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+            font-weight: 700;
+        }
+
+        .tech-desc {
+            font-size: 1.2em;
+            opacity: 0.85;
+            position: relative;
+            z-index: 2;
+            line-height: 1.6;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 40px;
+            max-width: 1500px;
+        }
+
+        .team-card {
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .team-card:hover {
+            transform: rotateY(10deg) rotateX(10deg) translateZ(30px);
+            box-shadow: 0 40px 80px rgba(255, 215, 0, 0.4);
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            margin: 0 auto 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .team-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6em;
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .team-role {
+            font-size: 1.1em;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1400px;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+        }
+
+        .timeline-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            flex: 1;
+        }
+
+        .timeline-content {
+            width: 100%;
+            background: rgba(255, 215, 0, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 25px 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            transition: all 0.5s ease;
+            margin-top: 60px;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 50px rgba(255, 215, 0, 0.4);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            background: #FFD700;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 30px #FFD700;
+            animation: pulse 2s ease infinite;
+            z-index: 10;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.3); }
+        }
+
+        .timeline-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3em;
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .timeline-desc {
+            font-size: 0.95em;
+            opacity: 0.85;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 50px;
+            max-width: 1200px;
+        }
+
+        .partner-card {
+            background: rgba(255, 215, 0, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .partner-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .partner-card:hover::before {
+            left: 100%;
+        }
+
+        .partner-card:hover {
+            transform: translateY(-20px) rotateZ(5deg);
+            box-shadow: 0 30px 70px rgba(255, 215, 0, 0.5);
+            border-color: #FFD700;
+        }
+
+        .partner-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.7));
+        }
+
+        .partner-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3em;
+            text-align: center;
+            color: #FFD700;
+            font-weight: 700;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            background: rgba(255, 215, 0, 0.05);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 30px;
+            padding: 60px;
+        }
+
+        .contact-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding: 25px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 15px;
+            border-left: 4px solid #FFD700;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateX(15px);
+            background: rgba(255, 215, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .contact-icon {
+            font-size: 2.5em;
+            color: #FFD700;
+        }
+
+        .contact-text {
+            font-size: 1.3em;
+            font-weight: 500;
+        }
+
+        .nav-container {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 9000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .nav-dot {
+            width: 15px;
+            height: 15px;
+            background: rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+        }
+
+        .nav-dot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            background: #FFD700;
+            border-radius: 50%;
+            transition: all 0.4s ease;
+        }
+
+        .nav-dot.active::after {
+            width: 30px;
+            height: 30px;
+        }
+
+        .nav-dot.active {
+            background: #FFD700;
+            box-shadow: 0 0 20px #FFD700;
+        }
+
+        .nav-dot:hover {
+            transform: scale(1.5);
+        }
+
+        .arrow-btn {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 215, 0, 0.15);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            color: #FFD700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 8000;
+            opacity: 0.7;
+        }
+
+        .arrow-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+            transform: translateY(-50%) scale(1.1);
+            opacity: 1;
+        }
+
+        .arrow-left {
+            left: 30px;
+        }
+
+        .arrow-right {
+            right: 30px;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1em;
+            color: #FFD700;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            z-index: 8000;
+            font-weight: 700;
+            opacity: 0.8;
+        }
+
+        .title-main {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8em;
+            text-align: center;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 800;
+        }
+
+        @media (max-width: 1024px) {
+            .stats-grid, .services-container, .team-grid, .partners-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .glitch-text {
+                font-size: 3em;
+            }
+            
+            .timeline {
+                flex-direction: column;
+                gap: 50px;
+            }
+
+            .timeline::before {
+                top: 0;
+                bottom: 0;
+                left: 30px;
+                width: 4px;
+                height: auto;
+            }
+
+            .timeline-dot {
+                left: 30px;
+                top: 20px;
+            }
+
+            .timeline-content {
+                margin-top: 0;
+                margin-left: 70px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid, .services-container, .team-grid, .partners-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-logo {
+                font-size: 4em;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-screen">
+        <div class="stars" id="stars"></div>
+        <div class="welcome-logo">🚕 REPRISE TAXI</div>
+        <button class="enter-button" id="enterBtn">Entrer</button>
+    </div>
+
+    <div class="space-transition" id="spaceTransition">
+        <div class="warp-line" style="animation-delay: 0s;"></div>
+        <div class="warp-line" style="animation-delay: 0.1s;"></div>
+        <div class="warp-line" style="animation-delay: 0.2s;"></div>
+        <div class="warp-line" style="animation-delay: 0.3s;"></div>
+        <div class="warp-line" style="animation-delay: 0.4s;"></div>
+    </div>
+
+    <div class="main-container" id="mainContainer">
+        <div class="progress-bar" id="progressBar" style="width: 10%;"></div>
+        <button class="fullscreen-btn" id="fullscreenBtn" title="Mode plein écran">⛶</button>
+        <div class="particles" id="particles"></div>
+        <div class="slide-counter">
+            <span id="currentSlide">01</span> / 10
+        </div>
+        <button class="auto-play-btn" id="autoPlayBtn">▶ Auto</button>
+
+        <!-- Slide 1: Accueil -->
+        <div class="slide slide-1 active">
+            <h1 class="glitch-text"> Los Santos Downtown TAXI</h1>
+            <p class="subtitle">( METTRE EN PLEINE ECRAN ) Dossier de Candidature à la Reprise</p>
+        </div>
+
+        <!-- Slide 2: Présentation du Candidat -->
+        <div class="slide slide-2">
+            <div class="profile-container">
+                <div class="profile-section">
+                    <h2 class="profile-title">👤 Présentation</h2>
+                    <p class="profile-text">
+                        Entrepreneur passionné avec <span class="profile-highlight">5 ans d'expérience</span> dans la gestion d'entreprise et le secteur des services. 
+                        Avec mon cousin Tariq Knox (RP), nous souhaitons reprendre l’entreprise TAXI de la ville de NovaCity.
+                        Ce projet a été longuement réfléchi et travaillé en amont. Nous avons pris le temps de construire un dossier sérieux, cohérent et immersif, avec l’envie réelle de faire vivre cette entreprise et de l’inscrire durablement dans la ville. Nous espérons sincèrement que notre projet retiendra votre attention.
+                    </p>
+                    <p class="profile-text">
+                        Ma vision : <span class="profile-highlight">transformer le TAXI en référence incontournable</span> du transport à Los Santos en alliant qualité de service, innovation et respect des employés.
+                    </p>
+                </div>
+                
+                <div class="profile-section">
+                    <h2 class="profile-title">📋 Coordonnées</h2>
+                    <div class="contact-grid">
+                        <div class="contact-box">
+                            <div class="contact-label">Nom & Prénom</div>
+                            <div class="contact-value">Jayden Daquan Simmons</div>
+                        </div>
+                        <div class="contact-box">
+                            <div class="contact-label">Téléphone</div>
+                            <div class="contact-value">(555)-7362485</div>
+                        </div>
+                        <div class="contact-box">
+                            <div class="contact-label">Entreprise</div>
+                            <div class="contact-value">TAXI</div>
+                        </div>
+                        <div class="contact-box">
+                            <div class="contact-label">Statut</div>
+                            <div class="contact-value">Candidat Repreneur</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Motivations -->
+        <div class="slide slide-3">
+            <h2 class="title-main">Mes Motivations</h2>
+            <div class="tech-content">
+                <div class="tech-list">
+                    <div class="tech-item">
+                        <div class="tech-title">💡 Passion pour le Service</div>
+                        <div class="tech-desc">Le secteur du transport m'a toujours fasciné. Je souhaite redonner ses lettres de noblesse à ce métier essentiel pour Los Santos et créer une entreprise où qualité rime avec humanité.</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-title">🎯 Défi Entrepreneurial</div>
+                        <div class="tech-desc">Reprendre le TAXI représente un challenge stimulant : redresser une entreprise en difficulté et la transformer en leader du marché grâce à une gestion moderne et efficace.</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-title">👥 Impact Social</div>
+                        <div class="tech-desc">Créer des emplois stables et valorisants pour les chauffeurs, offrir un service accessible à tous les habitants de LS, et contribuer au dynamisme économique de la ville.</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-title">🏆 Vision Long Terme</div>
+                        <div class="tech-desc">Bâtir une entreprise pérenne, référence en matière de qualité et d'innovation dans le transport urbain, avec des valeurs fortes et une croissance durable.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Projet de Développement -->
+        <div class="slide slide-4">
+            <h2 class="title-main">Projet de Développement</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Phase 1 - Reprise</div>
+                        <div class="timeline-desc">Rachat officiel et audit complet. Restructuration et stabilisation de l'activité.</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Phase 2 - Modernisation</div>
+                        <div class="timeline-desc">Renouvellement flotte, formation équipe, refonte image de marque.</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Phase 3 - Expansion</div>
+                        <div class="timeline-desc">Recrutement massif, augmentation flotte de 40%, nouveaux services.</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">Phase 4 - Partenariats</div>
+                        <div class="timeline-desc">Contrats B2B avec hôtels, entreprises, aéroport et casinos.</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-title">An 1 - Leadership</div>
+                        <div class="timeline-desc">Devenir la référence du transport à LS avec 50% de parts de marché.</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Équipe & Associés -->
+        <div class="slide slide-5">
+            <h2 class="title-main">L'Équipe Dirigeante</h2>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">👤</div>
+                    <div class="team-name">Jayden Daquan Simmons</div>
+                    <div class="team-role">Directeur Général</div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">🎯</div>
+                    <div class="team-name">Tariq Knox</div>
+                    <div class="team-role">Directeur des Opérations</div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">💰</div>
+                    <div class="team-name">Malik Johnson</div>
+                    <div class="team-role">Responsable Financier</div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">🔧</div>
+                    <div class="team-name">Darius Johnson</div>
+                    <div class="team-role">Chef Mécanicien</div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">📋</div>
+                    <div class="team-name">Elijah Johnson</div>
+                    <div class="team-role">Dispatcher en Chef</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Idées pour Dynamiser -->
+        <div class="slide slide-6">
+            <h2 class="title-main">Dynamisation de l'Entreprise</h2>
+            <div class="services-container">
+                <div class="service-box">
+                    <div class="service-icon">🎉</div>
+                    <div class="service-title">Journée Portes Ouvertes</div>
+                    <div class="service-desc">Événement mensuel pour présenter la flotte, rencontrer les chauffeurs et créer du lien avec la communauté de Los Santos.</div>
+                </div>
+                <div class="service-box">
+                    <div class="service-icon">🏁</div>
+                    <div class="service-title">Course Caritative</div>
+                    <div class="service-desc">Organisation de courses solidaires avec dons reversés à des associations locales. Engagement citoyen et visibilité.</div>
+                </div>
+                <div class="service-box">
+                    <div class="service-icon">🎊</div>
+                    <div class="service-title">Partenariats Événements</div>
+                    <div class="service-desc">Service VIP pour concerts, matchs et grands événements. Navettes dédiées et tarifs spéciaux pour dynamiser l'activité.</div>
+                </div>
+                <div class="service-box">
+                    <div class="service-icon">🏆</div>
+                    <div class="service-title">Chauffeur du Mois</div>
+                    <div class="service-desc">Programme de reconnaissance avec récompenses pour motiver l'équipe et valoriser l'excellence du service.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Vision de Gestion -->
+        <div class="slide slide-7">
+            <div class="circuit-bg"></div>
+            <div class="tech-content">
+                <h2 class="title-main">Vision de Gestion</h2>
+                <div class="tech-list">
+                    <div class="tech-item">
+                        <div class="tech-title">📊 Gestion du Chiffre d'Affaires</div>
+                        <div class="tech-desc">Système comptable rigoureux avec objectifs trimestriels. Réinvestissement de 40% des bénéfices dans la flotte et la formation. Transparence financière totale avec l'équipe dirigeante.</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-title">⏰ Système d'Astreintes</div>
+                        <div class="tech-desc">Rotation équitable des permanences 24/7. Planning mensuel établi en concertation avec les chauffeurs. Prime d'astreinte attractive pour heures de nuit et week-ends (+ 30%).</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-title">👥 Management Participatif</div>
+                        <div class="tech-desc">Réunions hebdomadaires avec toute l'équipe. Boîte à idées avec primes d'innovation. Valorisation des initiatives et esprit d'équipe au cœur de nos valeurs.</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-title">📈 Suivi de Performance</div>
+                        <div class="tech-desc">Tableaux de bord quotidiens avec KPI clairs : satisfaction client, temps de réponse, CA par chauffeur. Objectifs réalistes et récompenses au mérite.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Services Proposés -->
+        <div class="slide slide-8">
+            <h2 class="title-main">Nos Services</h2>
+            <div class="services-container">
+                <div class="service-box">
+                    <div class="service-icon">🚖</div>
+                    <div class="service-title">Course Standard</div>
+                    <div class="service-desc">Service rapide et professionnel pour tous déplacements en ville. Tarifs compétitifs et transparents avec respect strict du compteur.</div>
+                </div>
+                <div class="service-box">
+                    <div class="service-icon">💼</div>
+                    <div class="service-title">Taxi Business</div>
+                    <div class="service-desc">Solution adaptée aux professionnels : facturation mensuelle, réservations prioritaires et véhicules premium haut de gamme.</div>
+                </div>
+                <div class="service-box">
+                    <div class="service-icon">✈️</div>
+                    <div class="service-title">Transfert Aéroport</div>
+                    <div class="service-desc">Navettes régulières vers l'aéroport de LS. Service bagages inclus et assistance garantie pour un voyage sans stress.</div>
+                </div>
+                <div class="service-box">
+                    <div class="service-icon">🌃</div>
+                    <div class="service-title">Service Nuit</div>
+                    <div class="service-desc">Disponible 24/7 avec chauffeurs spécialement formés et véhicules sécurisés pour vos sorties nocturnes en toute tranquillité.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Partenaires Stratégiques -->
+        <div class="slide slide-9">
+            <h2 class="title-main">Partenaires Visés</h2>
+            <div class="partners-grid">
+                <div class="partner-card">
+                    <div class="partner-icon">🏨</div>
+                    <div class="partner-name">Hôtels LS</div>
+                </div>
+                <div class="partner-card">
+                    <div class="partner-icon">✈️</div>
+                    <div class="partner-name">Aéroport</div>
+                </div>
+                <div class="partner-card">
+                    <div class="partner-icon">🏢</div>
+                    <div class="partner-name">Entreprises</div>
+                </div>
+                <div class="partner-card">
+                    <div class="partner-icon">🎰</div>
+                    <div class="partner-name">Casinos</div>
+                </div>
+                <div class="partner-card">
+                    <div class="partner-icon">🏥</div>
+                    <div class="partner-name">Hôpitaux</div>
+                </div>
+                <div class="partner-card">
+                    <div class="partner-icon">🎪</div>
+                    <div class="partner-name">Événements</div>
+                </div>
+                <div class="partner-card">
+                    <div class="partner-icon">🍽️</div>
+                    <div class="partner-name">Restaurants</div>
+                </div>
+                <div class="partner-card">
+                    <div class="partner-icon">🏛️</div>
+                    <div class="partner-name">Mairie LS</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Contact & Conclusion -->
+        <div class="slide slide-10">
+            <div class="contact-container">
+                <h2 class="contact-title">🚕 Nous Contacter</h2>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <div class="contact-text">555-TAXI</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div class="contact-text">(555)-7362485</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div class="contact-text">contact@taxi-ls.rp</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div class="contact-text">Downtown Los Santos</div>
+                    </div>
+                </div>
+                <p class="profile-text" style="text-align: center; margin-top: 40px; font-size: 1.1em;">
+                    Merci de votre attention. Je suis à votre disposition pour toute question ou précision concernant ce projet de reprise du TAXI.
+                </p>
+            </div>
+        </div>
+
+        <div class="arrow-btn arrow-left" onclick="prevSlide()">‹</div>
+        <div class="arrow-btn arrow-right" onclick="nextSlide()">›</div>
+
+        <div class="nav-container">
+            <div class="nav-dot active" onclick="goToSlide(0)"></div>
+            <div class="nav-dot" onclick="goToSlide(1)"></div>
+            <div class="nav-dot" onclick="goToSlide(2)"></div>
+            <div class="nav-dot" onclick="goToSlide(3)"></div>
+            <div class="nav-dot" onclick="goToSlide(4)"></div>
+            <div class="nav-dot" onclick="goToSlide(5)"></div>
+            <div class="nav-dot" onclick="goToSlide(6)"></div>
+            <div class="nav-dot" onclick="goToSlide(7)"></div>
+            <div class="nav-dot" onclick="goToSlide(8)"></div>
+            <div class="nav-dot" onclick="goToSlide(9)"></div>
+        </div>
+    </div>
+
+    <script>
+        const starsContainer = document.getElementById('stars');
+        for(let i = 0; i < 200; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = Math.random() * 3 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        const particlesContainer = document.getElementById('particles');
+        for(let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        document.getElementById('enterBtn').addEventListener('click', function() {
+            const welcomeScreen = document.querySelector('.welcome-screen');
+            const spaceTransition = document.getElementById('spaceTransition');
+            const mainContainer = document.getElementById('mainContainer');
+
+            spaceTransition.classList.add('active');
+
+            setTimeout(() => {
+                welcomeScreen.classList.add('hidden');
+            }, 500);
+
+            setTimeout(() => {
+                mainContainer.classList.add('visible');
+                spaceTransition.classList.remove('active');
+            }, 2000);
+        });
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        const slideCounter = document.getElementById('currentSlide');
+        const progressBar = document.getElementById('progressBar');
+        let autoPlayInterval = null;
+
+        function updateSlideCounter() {
+            slideCounter.textContent = String(currentSlide + 1).padStart(2, '0');
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+            updateSlideCounter();
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function goToSlide(n) {
+            showSlide(n);
+        }
+
+        const autoPlayBtn = document.getElementById('autoPlayBtn');
+        autoPlayBtn.addEventListener('click', function() {
+            if(autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                autoPlayBtn.textContent = '▶ Auto';
+                autoPlayBtn.classList.remove('active');
+            } else {
+                autoPlayInterval = setInterval(nextSlide, 4000);
+                autoPlayBtn.textContent = '⏸ Auto';
+                autoPlayBtn.classList.add('active');
+            }
+        });
+
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        fullscreenBtn.addEventListener('click', function() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if(document.querySelector('.main-container').classList.contains('visible')) {
+                if(e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+                if(e.key === 'ArrowLeft') prevSlide();
+                if(e.key === 'Escape' && autoPlayInterval) {
+                    clearInterval(autoPlayInterval);
+                    autoPlayInterval = null;
+                    autoPlayBtn.textContent = '▶ Auto';
+                    autoPlayBtn.classList.remove('active');
+                }
+            }
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50) nextSlide();
+            if (touchEndX > touchStartX + 50) prevSlide();
+        });
+
+        document.querySelectorAll('.team-card, .service-box').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(30px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+            });
+        });
+    </script>
+</body>
+</html>
